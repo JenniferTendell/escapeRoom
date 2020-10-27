@@ -1,1 +1,3 @@
-# escapeRoom
+# EscapeRoom
+
+## Laboration 1
