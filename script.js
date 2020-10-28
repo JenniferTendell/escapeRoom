@@ -13,8 +13,8 @@ const scenes = [
     {
         // 0 - Start
         text: 'Du har precis vaknat och inser att du befinner dig i ett okänt rum. Framför dig ligger en lapp.',
-        options: ['Plocka upp lappen', 'Strunta i lappen'],
-        nextScene: [1, 1]
+        options: ['Plocka upp lappen', 'Strunta i lappen',],
+        nextScene: [1, 2]
     },
     {
         // 1 - Note
@@ -87,24 +87,44 @@ const scenes = [
 ]
 
 
-// Show scene text and options
+// Show scene, text and options
 function presentScene() {
+
     const storyText = document.getElementById('text');
     storyText.innerHTML = scenes[currentScene].text;
 
-    const button1 = document.getElementById('button-1');
-    button1.innerHTML = scenes[currentScene].options[0];
-    button1.onclick()
-
-    const button2 = document.getElementById('button-2');
-    button2.innerHTML = scenes[currentScene].options[1]
-
-    handleUserOption(answer);
+    showOptions()  
 }
 
 
+// Display option buttons
+function showOptions() {
+    let quantityOfOptions = scenes[currentScene].options.length;
 
-function handleUserOption (answer) {
+    if (quantityOfOptions >= 1 ) {
+        const button1 = document.getElementById('button-1');
+        button1.innerHTML = scenes[currentScene].options[0];
+        button1.addEventListener('click', handleUserOption)  
+    }
+    if (quantityOfOptions >= 2) {
+        const button2 = document.getElementById('button-2');
+        button2.innerHTML = scenes[currentScene].options[1]
+    }
+    if (quantityOfOptions >= 3) { 
+        const button3 = document.getElementById('button-3');
+        button3.innerHTML = scenes[currentScene].options[2]
+    }
+    if (quantityOfOptions >= 4) {
+        const button4 = document.getElementById('button-4');
+        button4.innerHTML = scenes[currentScene].options[3]
+    }     
+}
+
+function handleUserOption () {
+    console.log('test')
+    
+   
+    
     
     
 }
