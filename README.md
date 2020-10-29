@@ -2,4 +2,4 @@
 
 ## Laboration 1
 
-# Gå vidare till [EscapeRoom]()
+### Gå vidare till [EscapeRoom](https://jennifertendell.github.io/escapeRoom/.)
