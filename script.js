@@ -1,8 +1,8 @@
 // Starting point for scene.
-let currentScene = 0
+let currentSceneIndex = 0
 
 // Items
-const items = {}
+let items = {}
 
 // Starts the game
 window.onload = presentScene;
@@ -18,8 +18,8 @@ const scenes = [
     },
     {
         // 1 - Note
-        text: 'Klockan tickar... Tick, tack... Tick, tack...',
-        optiions: ['Lägg ner lappen'],
+        text: 'På lappen står det "Klockan tickar... Tick, tack... Tick, tack..."',
+        options: ['Lägg ner lappen'],
         nextScene: [2]
     },
     {
@@ -87,47 +87,53 @@ const scenes = [
 ]
 
 
-// Show scene, text and options
+
+// Show scene; text and options
 function presentScene() {
+    const scene = scenes[currentSceneIndex];
+    
+    // Skickar med hela objektet 'scene'
+    updateStoryText(scene);
+    createOptionButtons(scene);
+}
 
+
+function updateStoryText (scene) {
     const storyText = document.getElementById('text');
-    storyText.innerHTML = scenes[currentScene].text;
-
-    showOptions()  
+    storyText.innerHTML = scene.text;
 }
 
 
-// Display option buttons
-function showOptions() {
-    let quantityOfOptions = scenes[currentScene].options.length;
+function createOptionButtons(scene) {
+    const buttonContainer = document.getElementById('option-container');
+    buttonContainer.innerHTML = "";
+    
+    for (let i = 0; i < scene.options.length; i++) {
+        const option = scene.options[i];
+        const nextScene = scene.nextScene[i];
 
-    if (quantityOfOptions >= 1 ) {
-        const button1 = document.getElementById('button-1');
-        button1.innerHTML = scenes[currentScene].options[0];
-        button1.addEventListener('click', handleUserOption)  
+        const button = createButton(option, nextScene)
+
+        //Uppdatera sidan med knappen
+        buttonContainer.append(button);
     }
-    if (quantityOfOptions >= 2) {
-        const button2 = document.getElementById('button-2');
-        button2.innerHTML = scenes[currentScene].options[1]
-    }
-    if (quantityOfOptions >= 3) { 
-        const button3 = document.getElementById('button-3');
-        button3.innerHTML = scenes[currentScene].options[2]
-    }
-    if (quantityOfOptions >= 4) {
-        const button4 = document.getElementById('button-4');
-        button4.innerHTML = scenes[currentScene].options[3]
-    }     
 }
 
-function handleUserOption () {
-    console.log('test')
-    
-   
-    
-    
-    
+function createButton(option, nextScene) {
+    const button = document.createElement('button');
+    button.classList.add('button');
+    button.innerHTML = option;
+    button.onclick = function () {
+        handleUserOption(nextScene)
+    }
+
+    return button;
 }
 
+function handleUserOption (nextScene) {
+    currentSceneIndex = nextScene;
+    presentScene();
+
+}
 
 
