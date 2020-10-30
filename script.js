@@ -1,9 +1,6 @@
 // Starting point for scene.
 let currentSceneIndex = 0
 
-// Items
-let items = {}
-
 // Starts the game
 window.onload = presentScene;
 
@@ -54,22 +51,22 @@ const scenes = [
     },
     {
         // 7 - Painting
-        text: 'Du går fram till tavlan i hopp om att hitta en ledtråd ut. Målningen är abstrakt, svårtolkad och ger inga ledtrådar.',
-        options: ['Plocka ner tavlan irriterat', 'Leta vidare'],
-        nextScene: [8, 3]
+        text: 'Du går fram till tavlan i hopp om att den kan ge dig en ledtråd. Målningen är abstrakt, svårtolkad och ger dig inga ledtrådar.',
+        options: ['Leta vidare', 'Plocka ner tavlan irriterat'],
+        nextScene: [3, 8]
     },
     {
         // 8 - Move painting
-        text: 'När du plockar ner tavlan märker du att den innehåller något. Du river upp den tunna baksidan och hittar en skruvmejsel.',
+        text: 'När du plockar ner tavlan märker du att den innehåller något. Du river upp tavlans baksidan och hittar en skruvmejsel.',
         options: ['Ta skruvmejseln och leta vidare'],
-        items: ['skruvmejsel'],
+        item: 'skruvmejsel',
         nextScene: [3]
     },
     {
         // 9 - Curtain
         text: 'Du går fram till gardinen och drar den försiktigt åt sidan. Du upptäcker att fönstret är igensatt av en tegelvägg.',
-        options: ['Känn på tegelstenar', 'Leta vidare'],
-        nextScene: [10, 3]
+        options: ['Leta vidare', 'Känn på tegelstenar'],
+        nextScene: [3, 10]
     },
     {
         // 10 - Brick
@@ -81,8 +78,76 @@ const scenes = [
         // 11 - Flashlight
         text: 'Stenen visade sig vara tunnare än utrymmet i väggen. Du sträcker in handen i hålet och hittar en ficklampa.',
         options: ['Ta ficklampan och leta vidare'],
-        items: ['ficklampa'],
+        item: 'ficklampa',
         nextScene: [3]
+    },
+        // Scenes when user got items
+    {
+        // 12 - Use screwdriver
+        text: 'Du inspekterar spegeln och ser att den sitter fast med skruvar.',
+        options: ['Använd skruvmejseln', 'Strunta i skruvarna'],
+        nextScene : [13, 3]
+    },
+    {
+        // 13 - Behind mirror
+        text: 'Du skruvar ner spegeln och möts av en dörr. För att öppna dörren krävs det ett lösenord.',
+        options: ['Fyll i lösenord', 'Leta efter lösenord'],
+        nextScene: [14, 3]
+    },
+    {
+        // 14 - Enter password
+        text: 'Fyll i lösenord',
+        options: ['Test', 'Leta efter lösenord'],
+        password: ['?'],
+        nextScene: [15, 3]
+    },
+    {
+        // 15 - Opens the door
+        text: '*Blipp blipp* Dörren är upplåst!',
+        options: ['Öppna dörren'],
+        nextScene: [16]
+    },
+    {
+        // 16 - Behind door
+        text: 'Du vrider om handtaget och möts av ett kolsvart rum. Du vägrar att gå in dit utan att se något.',
+        options: ['Gå tillbaka och leta efter en ljuskälla'],
+        nextScene: [3]
+    },
+    {
+        // 17 - Use flashlight
+        text: 'Du tänder ficklampan och riktar den mot det mörka rummet. Rummet visar sig vara en korridor.',
+        options: ['Följ korridoren'],
+        nextScene: [18]
+    },
+    {
+        // 18 - End of corridor
+        text: 'Du går sakta genom korridoren och möts av två dörrar. Vilken dörr vill du öppna?',
+        options: ['Dörr 1', 'Dörr 2'],
+        nextScene: [19, 22]
+    },
+    {
+        // 19 - Open door 1
+        text: 'Du väljer att öppna dörr 1 och ser att korridoren fortsätter. Dörren smälls igen bakom dig och går i lås. Ditt enda val är att fortsätta framåt.',
+        options: ['Följ korridoren'],
+        nextScene: [20]
+    },
+    {
+        // 20 - Door 1, corridor
+        text: 'Du följer korridoren. Du kikar försiktigt fram runt hörnet där du ser ännu en dörr.',
+        options: ['Gå fram och öppna dörren'],
+        nextScene: [21]
+    },
+    {
+        // 21 - Door 1, new door
+        text: 'Du vrider om låset för att öppna dörren. Rummet bakom dörren är tyvärr bekant. Du har lyckats öppna dörren in till rummet där du började.',
+        options: ['Gå till spegeln', 'Gå till tavlan', 'Gå till gardinen'],
+        nextScene: [5, 7, 9]
+    },
+    {
+        // 22 - Door 2
+        text: 'Du väljer att öppna dörr 2 och möts av solljus. Du lyckades ta dig ut!',
+        options: ['Börja om'],
+        nextScene: [0]
     }
 ]
 
@@ -92,9 +157,23 @@ const scenes = [
 function presentScene() {
     const scene = scenes[currentSceneIndex];
     
-    // Skickar med hela objektet 'scene'
     updateStoryText(scene);
     createOptionButtons(scene);
+    collectItems(scene);
+}
+
+function collectItems(scene) {
+    if (scene.item) {
+        if (scene.item == 'skruvmejsel') {
+            scenes[5].options.push('Inspektera spegeln'),
+            scenes[5].nextScene.push(12),
+            scenes[7].options.pop()
+        }if (scene.item == 'ficklampa') {
+            scenes[16].options.push('Använd ficklampa'),
+            scenes[16].nextScene.push(17),
+            scenes[9].options.pop()
+        }
+    }
 }
 
 
