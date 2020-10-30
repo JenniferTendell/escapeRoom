@@ -96,10 +96,10 @@ const scenes = [
     },
     {
         // 14 - Enter password
-        text: 'Fyll i lösenord',
-        options: ['Test', 'Leta efter lösenord'],
-        password: ['?'],
-        nextScene: [15, 3]
+        text: 'Fyll i lösenord (siffror)',
+        options: ['Leta efter lösenord'],
+        password: 491,
+        nextScene: [3]
     },
     {
         // 15 - Opens the door
@@ -153,36 +153,30 @@ const scenes = [
 
 
 
-// Show scene; text and options
+
+/** Controls what to show for each scene */
 function presentScene() {
     const scene = scenes[currentSceneIndex];
-    
+
     updateStoryText(scene);
     createOptionButtons(scene);
     collectItems(scene);
+    createPasswordInput(scene);
 }
 
-function collectItems(scene) {
-    if (scene.item) {
-        if (scene.item == 'skruvmejsel') {
-            scenes[5].options.push('Inspektera spegeln'),
-            scenes[5].nextScene.push(12),
-            scenes[7].options.pop()
-        }if (scene.item == 'ficklampa') {
-            scenes[16].options.push('Använd ficklampa'),
-            scenes[16].nextScene.push(17),
-            scenes[9].options.pop()
-        }
-    }
-}
-
-
+/**
+ * Changes text based on scene index.
+ * @param {Array<Number>} scene 
+ */
 function updateStoryText (scene) {
     const storyText = document.getElementById('text');
     storyText.innerHTML = scene.text;
 }
 
-
+/**
+ * Creates as many buttons as options for each scene
+ * @param {Array<Number>} scene 
+ */
 function createOptionButtons(scene) {
     const buttonContainer = document.getElementById('option-container');
     buttonContainer.innerHTML = "";
@@ -193,13 +187,18 @@ function createOptionButtons(scene) {
 
         const button = createButton(option, nextScene)
 
-        //Uppdatera sidan med knappen
+        //Skapa en knapp
         buttonContainer.append(button);
     }
 }
 
+/**
+ * Sets inner text and design for each button. Onclick is connected to the next scene. 
+ * @param {Array<String>} option 
+ * @param {Array<Number>} nextScene 
+ */
 function createButton(option, nextScene) {
-    const button = document.createElement('button');
+    button = document.createElement('button');
     button.classList.add('button');
     button.innerHTML = option;
     button.onclick = function () {
@@ -209,10 +208,60 @@ function createButton(option, nextScene) {
     return button;
 }
 
+/**
+ * Sets the next scene based on which button the user clicked on.
+ * @param {Array<Number>} nextScene 
+ */
 function handleUserOption (nextScene) {
     currentSceneIndex = nextScene;
     presentScene();
-
 }
 
+/**
+ * Checks if the scene contains an item. If it does, new options will be created and the item wont be able to pic up again.
+ * @param {Array<Number>} scene 
+ */
+function collectItems(scene) {
+    if (scene.item) {
+        if (scene.item == 'skruvmejsel') {
+            scenes[5].options.push('Inspektera spegeln'),
+            scenes[5].nextScene.push(12),
+            scenes[7].options.pop()
+        } if (scene.item == 'ficklampa') {
+            scenes[16].options.push('Använd ficklampa'),
+            scenes[16].nextScene.push(17),
+            scenes[9].options.pop()
+        }
+    }
+}
 
+/**
+ * An input field will appear if the scene index contains 'password'.
+ * @param {Array<Number>} scene 
+ */
+function createPasswordInput(scene) {
+    document.getElementById("password-container").style.display = 'none';
+
+    if (scene.password) {
+        document.getElementById("password-container").style.display = 'block';
+        const form = document.getElementById('form');
+        form.onsubmit = handlePassword.bind(null, scene)  
+    }
+}
+
+/**
+ * Checks if the user input of password is correct
+ * @param {Array<Number>} scene 
+ * @param {Event} event 
+ */
+function handlePassword(scene, event) {
+    event.preventDefault();
+    const input = document.getElementById('password');
+    if(input.value == scene.password){
+        currentSceneIndex = 15,
+        presentScene();
+    } else {
+        const wrongPassword = document.getElementById('label');
+        wrongPassword.innerHTML ='Fel lösenord'
+    }
+}
